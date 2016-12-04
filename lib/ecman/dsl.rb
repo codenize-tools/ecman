@@ -1,4 +1,6 @@
 class Ecman::DSL
+  ROOT_KEY = 'cron_job'
+
   class << self
     def convert(exported)
       Dslh.deval(exported, root_identify: true)

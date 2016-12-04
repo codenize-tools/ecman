@@ -8,6 +8,7 @@ require 'pp'
 require 'logger'
 require 'singleton'
 require 'term/ansicolor'
+require 'easycron'
 
 require 'ecman/version'
 #require 'ecman/ext/hash_ext'

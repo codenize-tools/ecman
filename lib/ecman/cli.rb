@@ -6,7 +6,7 @@ class Ecman::CLI < Thor
   # vi: set ft=ruby :
   EOS
 
-
+  class_option :token, default: ENV['EASYCRON_TOKEN']
   class_option :target
   class_option :color, type: :boolean, default: true
   class_option :debug, type: :boolean, default: false

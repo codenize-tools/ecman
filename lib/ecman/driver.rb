@@ -11,27 +11,34 @@ class Ecman::Driver
     log(:info, "Create '#{name}'", color: :cyan)
 
     unless @options[:dry_run]
-      # FIXME:
-      warn 'FIXME: Driver#create() not implemented'.yellow
+      attrs.update('cron_job_name' => name)
+      @client.add(**symbolize(attrs))
     end
   end
 
   def delete(name, attrs)
+    cron_job_id = attrs.delete('cron_job_id')
     log(:info, "Delete '#{name}'", color: :red)
 
     unless @options[:dry_run]
-      # FIXME:
-      warn 'FIXME: Driver#delete() not implemented'.yellow
+      @client.delete(id: cron_job_id)
     end
   end
 
   def update(name, attrs, old_attrs)
+    cron_job_id = old_attrs.delete('cron_job_id')
     log(:info, "Update '#{name}'", color: :green)
     log(:info, diff(old_attrs, attrs, color: @options[:color]), color: false)
 
     unless @options[:dry_run]
-      # FIXME:
-      warn 'FIXME: Driver#update() not implemented'.yellow
+      attrs.update('id' => cron_job_id, 'cron_job_name' => name)
+      @client.edit(**symbolize(attrs))
     end
+  end
+
+  private
+
+  def symbolize(attrs)
+    attrs.map {|k, v| [k.to_sym, v] }.to_h
   end
 end

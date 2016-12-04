@@ -2,7 +2,7 @@
 # see http://www.kuwata-lab.com/kwalify/ruby/users-guide.html
 type: map
 mapping:
-  "server":
+  "cron_job":
     type: seq
     sequence:
       - type: map
@@ -10,17 +10,21 @@ mapping:
           "_id":
             type: str
             required: yes
-          "middleware":
+          "cron_expression":
             type: str
             required: yes
-          "tag":
-            type: seq
-            sequence:
-              - type: map
-                mapping:
-                  "key":
-                    type: str
-                    required: true
-                  "value":
-                    type: str
-                    required: true
+          "url":
+            type: str
+            required: yes
+          "email_me":
+            type: int
+            required: yes
+          "log_output_length":
+            type: int
+            required: yes
+          "cookies":
+            type: str
+          "posts":
+            type: str
+          "via_tor":
+            type: int

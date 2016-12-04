@@ -3,14 +3,13 @@ class Ecman::Client
 
   def initialize(options = {})
     @options = options
-    # FIXME: create api client
-    @client = @options[:client] # || YourService::Client.new
+    @client = @options[:client] || Easycron::Client.new(token: options.fetch(:token))
     @driver = Ecman::Driver.new(@client, options)
     @exporter = Ecman::Exporter.new(@client, @options)
   end
 
   def export
-    expected = @exporter.export
+    expected = @exporter.export(without_cron_job_id: true)
     Ecman::DSL.convert(expected)
   end
 
@@ -30,12 +29,8 @@ class Ecman::Client
   private
 
   def walk(expected, actual)
-    # FIXME:
-    warn 'FIXME: Client#walk() not implemented'.yellow
-
-    # FIXME: this is an example
-    expected = expected.fetch('server')
-    actual = actual.fetch('server')
+    expected = expected.fetch(Ecman::DSL::ROOT_KEY)
+    actual = actual.fetch(Ecman::DSL::ROOT_KEY)
 
     updated = false
 
@@ -45,7 +40,10 @@ class Ecman::Client
       actual_attrs = actual.delete(name)
 
       if actual_attrs
-        if expected_attrs != actual_attrs
+        actual_attrs_without_id = actual_attrs.dup
+        actual_attrs_without_id.delete('cron_job_id')
+
+        if expected_attrs != actual_attrs_without_id
           @driver.update(name, expected_attrs, actual_attrs)
           updated = true
         end
