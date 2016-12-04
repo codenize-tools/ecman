@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+$: << File.expand_path('../../lib', __FILE__)
+
+require 'thor'
+require 'ecman'
+require 'ecman/cli'
+
+debug = ARGV.any? {|i| i == '--debug' }
+
+begin
+  Ecman::CLI.start(ARGV)
+rescue => e
+  if debug
+    raise e
+  else
+    $stderr.puts "ERROR: #{e}".red
+  end
+end

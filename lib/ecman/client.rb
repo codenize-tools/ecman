@@ -1,0 +1,78 @@
+class Ecman::Client
+  include Ecman::Utils::TargetMatcher
+
+  def initialize(options = {})
+    @options = options
+    # FIXME: create api client
+    @client = @options[:client] # || YourService::Client.new
+    @driver = Ecman::Driver.new(@client, options)
+    @exporter = Ecman::Exporter.new(@client, @options)
+  end
+
+  def export
+    expected = @exporter.export
+    Ecman::DSL.convert(expected)
+  end
+
+  def apply(file)
+    expected = load_file(file)
+    actual =  @exporter.export
+
+    updated = walk(expected, actual)
+
+    if @options[:dry_run]
+      false
+    else
+      updated
+    end
+  end
+
+  private
+
+  def walk(expected, actual)
+    # FIXME:
+    warn 'FIXME: Client#walk() not implemented'.yellow
+
+    # FIXME: this is an example
+    expected = expected.fetch('server')
+    actual = actual.fetch('server')
+
+    updated = false
+
+    expected.each do |name, expected_attrs|
+      next unless target?(name)
+
+      actual_attrs = actual.delete(name)
+
+      if actual_attrs
+        if expected_attrs != actual_attrs
+          @driver.update(name, expected_attrs, actual_attrs)
+          updated = true
+        end
+      else
+        @driver.create(name, expected_attrs)
+        updated = true
+      end
+    end
+
+    actual.each do |name, actual_attrs|
+      next unless target?(name)
+      @driver.delete(name, actual_attrs)
+      updated = true
+    end
+
+    updated
+  end
+
+  def load_file(file)
+    if file.kind_of?(String)
+      open(file) do |f|
+        Ecman::DSL.parse(f.read, file, @options)
+      end
+    elsif file.respond_to?(:read)
+      Ecman::DSL.parse(file.read, file.path, @options)
+    else
+      raise TypeError, "can't convert #{file} into File"
+    end
+  end
+end
