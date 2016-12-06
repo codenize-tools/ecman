@@ -29,8 +29,8 @@ class Ecman::Client
   private
 
   def walk(expected, actual)
-    expected = expected.fetch(Ecman::DSL::ROOT_KEY)
-    actual = actual.fetch(Ecman::DSL::ROOT_KEY)
+    expected = expected.fetch('cron_job')
+    actual = actual.fetch('cron_job')
 
     updated = false
 

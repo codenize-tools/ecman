@@ -8,7 +8,7 @@ class Ecman::Exporter
 
   def export(without_cron_job_id: false)
     result = {}
-    cron_jobs = result[Ecman::DSL::ROOT_KEY] = {}
+    cron_jobs = result['cron_job'] = {}
 
     @client.list.fetch('cron_jobs').each do |cron_job|
       cron_job_name = cron_job.fetch('cron_job_name')
